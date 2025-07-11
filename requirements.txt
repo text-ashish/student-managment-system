@@ -2,4 +2,3 @@ Django>=5.2
 gunicorn
 django-widget-tweaks
 whitenoise
-

@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-r4g8b3ri%4bekni=7-@wsp7!(ti(@c@dse)-(0_0pxq!1xc(*&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['student-managment-system-production.up.railway.app', 'localhost', '127.0.0.1']
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'

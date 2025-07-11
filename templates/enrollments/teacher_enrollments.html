@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% block title %}Enrollment Details{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="detail-header">
+        <div class="back-button">
+            <a href="{% url 'my_courses' %}" class="btn-back">
+                <span class="back-icon">←</span>
+                Back to My Courses
+            </a>
+        </div>
+        <h1 class="detail-title">Enrollment Details</h1>
+        <p class="detail-subtitle">Track your academic progress and performance</p>
+    </div>
+
+    <div class="detail-content">
+        <div class="enrollment-card">
+            <div class="card-header">
+                <div class="enrollment-icon">📋</div>
+                <div class="enrollment-status">
+                    <span class="status-badge active">Active Enrollment</span>
+                </div>
+            </div>
+
+            <div class="enrollment-info">
+                <div class="info-section">
+                    <h3 class="section-title">Student Information</h3>
+                    <div class="info-item">
+                        <span class="info-icon">👤</span>
+                        <div class="info-content">
+                            <span class="info-label">Student Name</span>
+                            <span class="info-value">{{ enrollment.student.user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="section-title">Course Information</h3>
+                    <div class="info-item">
+                        <span class="info-icon">📚</span>
+                        <div class="info-content">
+                            <span class="info-label">Course Title</span>
+                            <span class="info-value">{{ enrollment.course.title }}</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">👨‍🏫</span>
+                        <div class="info-content">
+                            <span class="info-label">Instructor</span>
+                            <span class="info-value">{{ enrollment.course.teacher.user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="section-title">Academic Performance</h3>
+                    {% if enrollment.grade %}
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">🎯</div>
+                            <h4 class="grade-title">Grade Assessment</h4>
+                        </div>
+                        <div class="grade-content">
+                            <div class="score-display">
+                                <span class="score-label">Current Score</span>
+                                <span class="score-value">{{ enrollment.grade.score }}</span>
+                            </div>
+                            {% if enrollment.grade.feedback %}
+                            <div class="feedback-section">
+                                <h5 class="feedback-title">Instructor Feedback</h5>
+                                <div class="feedback-content">
+                                    <p class="feedback-text">{{ enrollment.grade.feedback }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="no-grade-card">
+                        <div class="no-grade-icon">⏳</div>
+                        <h4 class="no-grade-title">Assessment Pending</h4>
+                        <p class="no-grade-description">No grade has been assigned yet. Your instructor will provide feedback once assessments are complete.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <a href="#" class="btn-primary">
+                    <span class="btn-icon">📧</span>
+                    Contact Instructor
+                </a>
+                <a href="#" class="btn-secondary">
+                    <span class="btn-icon">📋</span>
+                    Course Materials
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.detail-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.back-button {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    transform: translateX(-3px);
+}
+
+.back-icon {
+    font-size: 1.2rem;
+}
+
+.detail-title {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, #fff, #f1f2f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.detail-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+}
+
+.detail-content {
+    width: 100%;
+}
+
+.enrollment-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.enrollment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.enrollment-icon {
+    font-size: 3rem;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+.enrollment-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    background: linear-gradient(45deg, #00d2d3, #54a0ff);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 210, 211, 0.3);
+}
+
+.enrollment-info {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.info-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+}
+
+.grade-card {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(238, 90, 36, 0.2));
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.grade-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.grade-icon {
+    font-size: 2rem;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.grade-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+}
+
+.grade-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.score-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 10px;
+}

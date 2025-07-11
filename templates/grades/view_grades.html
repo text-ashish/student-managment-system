@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %}Your Grades{% endblock %}
+{% block content %}
+
+<div class="hero-section fade-in">
+    <h1 class="hero-title">Your Grades</h1>
+    <p class="hero-subtitle">
+        Track your academic performance and progress across all enrolled courses.
+    </p>
+</div>
+
+{% if grades %}
+<div class="grades-container">
+    <div class="grades-table-container">
+        <div class="table-header">
+            <div class="header-cell">Course</div>
+            <div class="header-cell">Score</div>
+            <div class="header-cell">Feedback</div>
+        </div>
+        
+        {% for grade in grades %}
+        <div class="grade-row fade-in-card">
+            <div class="grade-cell course-cell">
+                <div class="course-icon">📚</div>
+                <div class="course-info">
+                    <h3 class="course-title">{{ grade.enrollment.course.title }}</h3>
+                </div>
+            </div>
+            <div class="grade-cell score-cell">
+                <div class="score-badge">{{ grade.score }}</div>
+            </div>
+            <div class="grade-cell feedback-cell">
+                <div class="feedback-content">{{ grade.feedback }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📊</div>
+    <h3 class="empty-title">No grades available yet.</h3>
+    <p class="empty-description">
+        Your grades will appear here once your instructors have evaluated your work.
+    </p>
+</div>
+{% endif %}
+
+<style>
+.grades-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.grades-table-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-cell {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+.grade-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.grade-row:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.grade-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.course-cell {
+    gap: 1rem;
+}
+
+.course-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.course-info {
+    flex: 1;
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.score-cell {
+    justify-content: center;
+}
+
+.score-badge {
+    background: linear-gradient(45deg, #10ac84, #00d2d3);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(16, 172, 132, 0.3);
+    min-width: 80px;
+    text-align: center;
+}
+
+.feedback-cell {
+    align-items: flex-start;
+}
+
+.feedback-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.empty-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.empty-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.fade-in-card {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-header,
+    .grade-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .header-cell {
+        display: none;
+    }
+    
+    .grade-cell {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .grade-cell:last-child {
+        border-bottom: none;
+    }
+    
+    .course-cell {
+        order: 1;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .score-cell {
+        order: 2;
+        justify-content: flex-start;
+    }
+    
+    .feedback-cell {
+        order: 3;
+    }
+    
+    .feedback-content {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Add stagger animation for rows */
+.grade-row:nth-child(1) { animation-delay: 0.1s; }
+.grade-row:nth-child(2) { animation-delay: 0.2s; }
+.grade-row:nth-child(3) { animation-delay: 0.3s; }
+.grade-row:nth-child(4) { animation-delay: 0.4s; }
+.grade-row:nth-child(5) { animation-delay: 0.5s; }
+.grade-row:nth-child(6) { animation-delay: 0.6s; }
+</style>
+
+<script>
+// Add scroll animations
+document.addEventListener('DOMContentLoaded', function() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-card');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all grade rows
+    document.querySelectorAll('.grade-row').forEach(row => {
+        observer.observe(row);
+    });
+});
+</script>
+
+{% endblock %}

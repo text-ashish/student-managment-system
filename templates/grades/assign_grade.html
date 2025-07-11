@@ -1,0 +1,645 @@
+{% extends 'base.html' %}
+{% block title %}Assign Grade{% endblock %}
+{% block content %}
+<div class="grade-assignment-container">
+    <div class="grade-form-wrapper">
+        <!-- Header Section -->
+        <div class="form-header">
+            <div class="student-avatar">
+                <div class="avatar-circle">
+                    <span class="avatar-initials">{{ enrollment.student.user.first_name.0|default:'S' }}{{ enrollment.student.user.last_name.0|default:'T' }}</span>
+                </div>
+            </div>
+            <div class="student-info">
+                <h2 class="student-name">{{ enrollment.student.user.first_name }} {{ enrollment.student.user.last_name }}</h2>
+                <p class="student-username">@{{ enrollment.student.user.username }}</p>
+                <div class="course-badge">
+                    <span class="course-icon">📚</span>
+                    <span>{{ enrollment.course.title }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade Form -->
+        <div class="grade-form-container">
+            <form method="post" class="grade-form">
+                {% csrf_token %}
+                
+                <!-- Score Input Section -->
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <label for="score" class="form-label">
+                            <span class="label-icon">🎯</span>
+                            Score
+                        </label>
+                        <div class="score-input-container">
+                            <input 
+                                type="number" 
+                                id="score" 
+                                name="score" 
+                                class="form-control score-input" 
+                                min="0" 
+                                max="100" 
+                                step="0.1"
+                                required
+                                placeholder="Enter score (0-100)"
+                            >
+                            <div class="score-indicator">
+                                <span class="score-display">0</span>
+                                <span class="score-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="score-slider-container">
+                            <input 
+                                type="range" 
+                                id="score-slider" 
+                                min="0" 
+                                max="100" 
+                                step="0.1" 
+                                value="0"
+                                class="score-slider"
+                            >
+                            <div class="slider-labels">
+                                <span>0%</span>
+                                <span>50%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grade Preview -->
+                <div class="grade-preview">
+                    <div class="grade-letter">
+                        <span class="letter-grade">-</span>
+                        <span class="grade-description">No grade yet</span>
+                    </div>
+                    <div class="grade-color-indicator"></div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="input-group">
+                    <label for="feedback" class="form-label">
+                        <span class="label-icon">💬</span>
+                        Feedback & Comments
+                    </label>
+                    <div class="feedback-wrapper">
+                        <textarea 
+                            id="feedback" 
+                            name="feedback" 
+                            class="form-control feedback-input" 
+                            rows="6" 
+                            placeholder="Provide detailed feedback about the student's performance, areas of improvement, and encouraging comments..."
+                        ></textarea>
+                        <div class="feedback-tools">
+                            <div class="word-counter">
+                                <span class="word-count">0</span> words
+                            </div>
+                            <div class="feedback-suggestions">
+                                <div class="suggestion-chip" data-text="Excellent work! Keep it up!">✨ Excellent</div>
+                                <div class="suggestion-chip" data-text="Good effort, but there's room for improvement.">👍 Good</div>
+                                <div class="suggestion-chip" data-text="Please review the material and try again.">📚 Review</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="window.history.back()">
+                        <span class="btn-icon">←</span>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-icon">✓</span>
+                        Assign Grade
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Grade Assignment Specific Styles */
+.grade-assignment-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.grade-form-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.grade-form-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    pointer-events: none;
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.student-avatar {
+    margin-right: 2rem;
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar-circle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 3s infinite;
+}
+
+.student-info {
+    flex: 1;
+}
+
+.student-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.student-username {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+}
+
+.course-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.course-icon {
+    margin-right: 0.5rem;
+}
+
+.grade-form-container {
+    position: relative;
+    z-index: 1;
+}
+
+.input-group {
+    margin-bottom: 2.5rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.label-icon {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.score-input-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.score-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: white;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    padding-right: 6rem;
+}
+
+.score-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.score-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.score-indicator {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.score-display {
+    font-size: 1.5rem;
+    margin-right: 0.25rem;
+}
+
+.score-suffix {
+    opacity: 0.7;
+}
+
+.score-slider-container {
+    margin-top: 1rem;
+}
+
+.score-slider {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.score-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.5);
+    transition: all 0.3s ease;
+}
+
+.score-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.7);
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.grade-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.grade-letter {
+    display: flex;
+    align-items: center;
+}
+
+.letter-grade {
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    margin-right: 1rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.grade-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.grade-color-indicator {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #666, #999);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.feedback-wrapper {
+    position: relative;
+}
+
+.feedback-input {
+    width: 100%;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: white;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 150px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-family: inherit;
+}
+
+.feedback-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.feedback-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.feedback-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.word-counter {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.word-count {
+    font-weight: bold;
+    color: white;
+}
+
+.feedback-suggestions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.suggestion-chip {
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.suggestion-chip:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 3rem;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .grade-assignment-container {
+        padding: 1rem;
+    }
+    
+    .grade-form-wrapper {
+        padding: 2rem;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .student-avatar {
+        margin: 0 0 1rem 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .feedback-tools {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .feedback-suggestions {
+        justify-content: center;
+    }
+}
+
+/* Animation for form elements */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const scoreInput = document.getElementById('score');
+    const scoreSlider = document.getElementById('score-slider');
+    const scoreDisplay = document.querySelector('.score-display');
+    const letterGrade = document.querySelector('.letter-grade');
+    const gradeDescription = document.querySelector('.grade-description');
+    const gradeColorIndicator = document.querySelector('.grade-color-indicator');
+    const feedbackInput = document.getElementById('feedback');
+    const wordCountElement = document.querySelector('.word-count');
+    const suggestionChips = document.querySelectorAll('.suggestion-chip');
+    
+    // Grade calculation function
+    function calculateGrade(score) {
+        if (score >= 90) return {letter: 'A+', description: 'Excellent', color: '#4CAF50'};
+        if (score >= 85) return {letter: 'A', description: 'Excellent', color: '#8BC34A'};
+        if (score >= 80) return {letter: 'B+', description: 'Very Good', color: '#FFC107'};
+        if (score >= 75) return {letter: 'B', description: 'Good', color: '#FF9800'};
+        if (score >= 70) return {letter: 'C+', description: 'Satisfactory', color: '#FF5722'};
+        if (score >= 65) return {letter: 'C', description: 'Satisfactory', color: '#F44336'};
+        if (score >= 60) return {letter: 'D', description: 'Needs Improvement', color: '#9C27B0'};
+        return {letter: 'F', description: 'Failing', color: '#F44336'};
+    }
+    
+    // Update grade display
+    function updateGradeDisplay(score) {
+        const grade = calculateGrade(score);
+        letterGrade.textContent = grade.letter;
+        gradeDescription.textContent = grade.description;
+        gradeColorIndicator.style.background = `linear-gradient(45deg, ${grade.color}, ${grade.color}80)`;
+        scoreDisplay.textContent = score;
+    }
+    
+    // Score input and slider synchronization
+    function syncScoreControls(value) {
+        scoreInput.value = value;
+        scoreSlider.value = value;
+        updateGradeDisplay(value);
+    }
+    
+    scoreInput.addEventListener('input', function() {
+        const value = Math.max(0, Math.min(100, this.value));
+        syncScoreControls(value);
+    });
+    
+    scoreSlider.addEventListener('input', function() {
+        syncScoreControls(this.value);
+    });
+    
+    // Word counter for feedback
+    function updateWordCount() {
+        const text = feedbackInput.value.trim();
+        const wordCount = text === '' ? 0 : text.split(/\s+/).length;
+        wordCountElement.textContent = wordCount;
+    }
+    
+    feedbackInput.addEventListener('input', updateWordCount);
+    
+    // Suggestion chips functionality
+    suggestionChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            const text = this.getAttribute('data-text');
+            const currentValue = feedbackInput.value.trim();
+            feedbackInput.value = currentValue ? currentValue + ' ' + text : text;
+            updateWordCount();
+            feedbackInput.focus();
+        });
+    });
+    
+    // Form animation
+    const formElements = document.querySelectorAll('.input-group, .grade-preview, .form-actions');
+    formElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Form validation
+    const form = document.querySelector('.grade-form');
+    form.addEventListener('submit', function(e) {
+        const score = parseFloat(scoreInput.value);
+        if (isNaN(score) || score < 0 || score > 100) {
+            e.preventDefault();
+            alert('Please enter a valid score between 0 and 100.');
+            scoreInput.focus();
+        }
+    });
+    
+    // Initialize default values
+    updateGradeDisplay(0);
+    updateWordCount();
+});
+</script>
+{% endblock %}

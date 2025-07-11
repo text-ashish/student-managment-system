@@ -1,0 +1,678 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .profile-hero {
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 30px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease-out;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 300px;
+    }
+
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.8s ease;
+    }
+
+    .profile-hero:hover::before {
+        left: 100%;
+    }
+
+    .profile-info {
+        flex: 1;
+        text-align: left;
+    }
+
+    .profile-avatar-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        min-width: 200px;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        position: relative;
+        animation: pulse 2s infinite;
+    }
+
+    .profile-avatar::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24, #ff6b6b);
+        border-radius: 50%;
+        z-index: -1;
+        animation: rotate 3s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(45deg, #fff, #f1f2f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+    }
+
+    .profile-role {
+        display: inline-block;
+        background: linear-gradient(45deg, #ffd700, #ffb347);
+        color: #333;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from { box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3); }
+        to { box-shadow: 0 8px 35px rgba(255, 215, 0, 0.5); }
+    }
+
+    .profile-email {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+        padding: 0 2rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+        opacity: 1;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(45deg, #4834d4, #686de0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        border-radius: 2px;
+    }
+
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 4rem;
+        padding: 0 2rem;
+    }
+
+    .course-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 2.5rem;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .course-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .course-card:hover::before {
+        opacity: 1;
+    }
+
+    .course-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .course-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .course-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(45deg, #00d2d3, #54a0ff);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .grade-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .grade-a {
+        background: linear-gradient(45deg, #2ecc71, #27ae60);
+        color: white;
+    }
+
+    .grade-b {
+        background: linear-gradient(45deg, #f39c12, #e67e22);
+        color: white;
+    }
+
+    .grade-c {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    .grade-pending {
+        background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        color: white;
+    }
+
+    .feedback-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-style: italic;
+        line-height: 1.6;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        margin-top: 1rem;
+    }
+
+    .student-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .student-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 15px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .student-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+    }
+
+    .student-avatar {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: white;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+        color: white;
+        text-decoration: none;
+    }
+
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        width: 100%;
+    }
+
+    .full-width-section {
+        width: 100%;
+        padding: 0;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    @media (max-width: 768px) {
+        .profile-hero {
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .profile-info {
+            text-align: center;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+        }
+        
+        .courses-grid {
+            grid-template-columns: 1fr;
+            padding: 0 1rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            padding: 0 1rem;
+        }
+        
+        .teacher-overview {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .main-container {
+            padding: 0 1rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="main-container">
+    <div class="content-wrapper">
+        <div class="profile-hero">
+            <div class="profile-info">
+                <h1 class="profile-name">{{ profile.user.username }}</h1>
+                <div class="profile-role">
+                    {% if profile.role == 'student' %}🎓 Student
+                    {% elif profile.role == 'teacher' %}👑 Teacher
+                    {% else %}👤 {{ profile.role|capfirst }}{% endif %}
+                </div>
+                <div class="profile-email">✉️ {{ profile.user.email }}</div>
+            </div>
+            
+            <div class="profile-avatar-section">
+                <div class="profile-avatar">
+                    {% if profile.role == 'student' %}👨‍🎓
+                    {% elif profile.role == 'teacher' %}👩‍🏫
+                    {% else %}👤{% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if profile.role == 'student' %}
+            <div class="full-width-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ profile.student_id }}</div>
+                        <div class="stat-label">Student ID</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ profile.enrollment_year }}</div>
+                        <div class="stat-label">Enrollment Year</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ enrollments|length }}</div>
+                        <div class="stat-label">Enrolled Courses</div>
+                    </div>
+                </div>
+            </div>
+        {% elif profile.role == 'teacher' %}
+            <div class="full-width-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ courses|length }}</div>
+                        <div class="stat-label">Courses Taught</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ profile.department|default:"N/A" }}</div>
+                        <div class="stat-label">Department</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ profile.office_location|default:"N/A" }}</div>
+                        <div class="stat-label">Office Location</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if profile.role == 'student' %}
+    <div class="full-width-section">
+        <h2 class="section-title">📚 My Enrolled Courses</h2>
+        
+        {% if enrollments %}
+            <div class="courses-grid">
+                {% for item in enrollments %}
+                    <div class="course-card">
+                        <div class="course-title">
+                            <div class="course-icon">📖</div>
+                            {{ item.course.title }}
+                        </div>
+                        
+                        {% if item.grade.score %}
+                            {% if item.grade.score >= 90 %}
+                                <div class="grade-badge grade-a">🏆 Grade: {{ item.grade.score }}</div>
+                            {% elif item.grade.score >= 80 %}
+                                <div class="grade-badge grade-b">⭐ Grade: {{ item.grade.score }}</div>
+                            {% elif item.grade.score >= 70 %}
+                                <div class="grade-badge grade-c">📊 Grade: {{ item.grade.score }}</div>
+                            {% else %}
+                                <div class="grade-badge grade-c">📈 Grade: {{ item.grade.score }}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="grade-badge grade-pending">⏳ Grade: Pending</div>
+                        {% endif %}
+                        
+                        {% if item.grade.feedback %}
+                            <div class="feedback-text">
+                                💬 "{{ item.grade.feedback }}"
+                            </div>
+                        {% else %}
+                            <div class="feedback-text">
+                                💭 No feedback available yet
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <p>You haven't enrolled in any courses yet!</p>
+            </div>
+        {% endif %}
+    </div>
+
+{% elif profile.role == 'teacher' %}
+    <div class="full-width-section">
+        <h2 class="section-title">🎓 Courses I Teach</h2>
+        
+        {% if courses %}
+            <div class="courses-grid">
+                {% for item in courses %}
+                    <div class="course-card">
+                        <div class="course-title">
+                            <div class="course-icon">📚</div>
+                            {{ item.course.title }}
+                        </div>
+                        
+                        <div class="grade-badge grade-a">
+                            👥 {{ item.enrollments|length }} Students
+                        </div>
+                        
+                        {% if item.enrollments %}
+                            <div class="student-list">
+                                {% for enroll in item.enrollments %}
+                                    <div class="student-item">
+                                        <div class="student-avatar">
+                                            {{ enroll.student.user.username|first|upper }}
+                                        </div>
+                                        {{ enroll.student.user.username }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="feedback-text">
+                                👥 No students enrolled yet
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🎓</div>
+                <p>You haven't been assigned any courses yet!</p>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div class="action-buttons">
+    <a href="{% url 'dashboard' %}" class="btn-primary">🏠 Back to Dashboard</a>
+    {% if profile.role == 'student' %}
+        <a href="{% url 'course_list' %}" class="btn-outline">📚 Browse Courses</a>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Stagger animation for course cards
+    const courseCards = document.querySelectorAll('.course-card');
+    courseCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+    // Add interactive hover effects
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(255, 255, 255, 0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255, 255, 255, 0.1)';
+        });
+    });
+    
+    // Add click ripple effect to buttons
+    document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.3);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+                pointer-events: none;
+            `;
+            
+            this.style.position = 'relative';
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+});
+</script>
+
+{% endblock %}

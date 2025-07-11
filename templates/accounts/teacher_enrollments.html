@@ -1,0 +1,492 @@
+{% extends 'base.html' %}
+{% block title %}My Enrollments{% endblock %}
+
+{% block content %}
+<div class="hero-section fade-in">
+    <h1 class="hero-title">My Enrollments</h1>
+    <p class="hero-subtitle">
+        Manage and track all students enrolled in your courses.
+    </p>
+</div>
+
+{% if enrollments %}
+<div class="enrollments-container">
+    <div class="enrollments-table-container">
+        <div class="table-header">
+            <div class="header-cell">Course</div>
+            <div class="header-cell">Student</div>
+            <div class="header-cell">Actions</div>
+        </div>
+        
+        {% for enrollment in enrollments %}
+        <div class="enrollment-row fade-in-card">
+            <div class="enrollment-cell course-cell">
+                <div class="course-icon">🎓</div>
+                <div class="course-info">
+                    <h3 class="course-title">{{ enrollment.course.title }}</h3>
+                    <p class="course-meta">Course ID: #{{ enrollment.course.id }}</p>
+                </div>
+            </div>
+            <div class="enrollment-cell student-cell">
+                <div class="student-avatar">👤</div>
+                <div class="student-info">
+                    <span class="student-name">{{ enrollment.student.user.username }}</span>
+                    <span class="student-email">{{ enrollment.student.user.email }}</span>
+                </div>
+            </div>
+            <div class="enrollment-cell action-cell">
+                <a href="{% url 'assign_grade' enrollment.id %}" class="btn-grade">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text">Assign Grade</span>
+                    <div class="btn-ripple"></div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🎓</div>
+    <h3 class="empty-title">No enrollments yet</h3>
+    <p class="empty-description">
+        Students will appear here once they enroll in your courses. Keep creating amazing content!
+    </p>
+    <div class="empty-actions">
+        <a href="{% url 'courses' %}" class="btn-secondary">
+            <span class="btn-icon">📚</span>
+            <span class="btn-text">View All Courses</span>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    a{
+        text-decoration: none;
+        color: inherit;
+    }
+
+.enrollments-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.enrollments-table-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-cell {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+.enrollment-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.enrollment-row:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.enrollment-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.course-cell {
+    gap: 1rem;
+}
+
+.course-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.course-info {
+    flex: 1;
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+.course-meta {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.student-cell {
+    gap: 0.75rem;
+}
+
+.student-avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.student-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.student-email {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.action-cell {
+    justify-content: center;
+}
+
+.btn-grade {
+    background: linear-gradient(45deg, #9c27b0, #673ab7);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.btn-grade:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
+    background: linear-gradient(45deg, #673ab7, #9c27b0);
+}
+
+.btn-grade:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+.btn-text {
+    font-size: 0.9rem;
+}
+
+.btn-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.btn-grade:hover .btn-ripple {
+    transform: translateX(100%);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.empty-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.empty-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.empty-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+.fade-in-card {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-header,
+    .enrollment-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .table-header {
+        display: none;
+    }
+    
+    .enrollment-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .enrollment-cell {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        justify-content: space-between;
+    }
+    
+    .enrollment-cell:last-child {
+        border-bottom: none;
+    }
+    
+    .course-cell {
+        order: 1;
+        padding-bottom: 1rem;
+    }
+    
+    .student-cell {
+        order: 2;
+    }
+    
+    .action-cell {
+        order: 3;
+        justify-content: center;
+        padding-top: 1rem;
+    }
+    
+    .btn-grade {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+/* Add stagger animation for rows */
+.enrollment-row:nth-child(1) { animation-delay: 0.1s; }
+.enrollment-row:nth-child(2) { animation-delay: 0.2s; }
+.enrollment-row:nth-child(3) { animation-delay: 0.3s; }
+.enrollment-row:nth-child(4) { animation-delay: 0.4s; }
+.enrollment-row:nth-child(5) { animation-delay: 0.5s; }
+.enrollment-row:nth-child(6) { animation-delay: 0.6s; }
+
+/* Loading state animation */
+.btn-grade.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-grade.loading .btn-text {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+</style>
+
+<script>
+// Add scroll animations
+document.addEventListener('DOMContentLoaded', function() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-card');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all enrollment rows
+    document.querySelectorAll('.enrollment-row').forEach(row => {
+        observer.observe(row);
+    });
+
+    // Add grade button interactions
+    document.querySelectorAll('.btn-grade').forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Add loading state
+            this.classList.add('loading');
+            this.querySelector('.btn-text').textContent = 'Loading...';
+            
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.3);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // Add hover effects for secondary buttons
+    document.querySelectorAll('.btn-secondary').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.1)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+
+// Add CSS for ripple animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+{% endblock %}

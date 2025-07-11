@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --text-primary: #1a1a1a;
+        --text-secondary: #6b7280;
+        --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.15);
+        --shadow-heavy: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+    
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="25" cy="25" r="0.3" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="0.4" fill="rgba(255,255,255,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .welcome-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 40px;
+        box-shadow: var(--shadow-medium);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .welcome-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: shimmer 4s ease-in-out infinite;
+        pointer-events: none;
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { transform: translateX(-100%) translateY(-100%); }
+        50% { transform: translateX(0%) translateY(0%); }
+    }
+    
+    .welcome-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-heavy);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .welcome-role {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        display: inline-block;
+        padding: 8px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-top: 20px;
+    }
+    
+    .option-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: var(--shadow-light);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .option-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .option-card:hover::before {
+        opacity: 1;
+    }
+    
+    .option-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-heavy);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .option-card.student {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+    }
+    
+    .option-card.teacher {
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+    }
+    
+    .option-card.admin {
+        background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%);
+    }
+    
+    .option-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .option-title::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 20px currentColor;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.2); }
+    }
+    
+    .option-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .option-link {
+        display: block;
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .option-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .option-link:hover::before {
+        left: 100%;
+    }
+    
+    .option-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateX(8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .option-link::after {
+        content: '→';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .option-link:hover::after {
+        opacity: 1;
+        transform: translateY(-50%) translateX(5px);
+    }
+    
+    @media (max-width: 768px) {
+        .options-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .welcome-card {
+            padding: 30px 20px;
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+        }
+        
+        .option-card {
+            padding: 25px;
+        }
+    }
+    
+    /* Floating particles animation */
+    .particle {
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float 8s infinite linear;
+        z-index: -1;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) translateX(0) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100vh) translateX(100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Welcome Section -->
+    
+        <h1 class="welcome-title">Welcome, {{ profile.user.username }}!</h1>
+        <div class="welcome-role">{{ profile.role|capfirst }}</div>
+    
+    <div class="hero-section fade-in">
+            <h1 class="hero-title">Next Generation Student Management</h1>
+            <p class="hero-subtitle">
+                Experience the future of educational administration with our revolutionary platform
+                designed for modern institutions and progressive educators.
+            </p>
+            <!-- <div class="btn-group">
+                <button class="btn-auth pulse">Get Started</button>
+                <button class="btn-secondary">Learn More</button>
+            </div> -->
+        </div>
+
+    <!-- Options Grid -->
+    <div class="options-grid">
+        {% if profile.role == 'student' %}
+            <div class="option-card student">
+                <h2 class="option-title">Student Dashboard</h2>
+                <ul class="option-links">
+                    <li><a href="{% url 'course_list' %}" class="option-link">Enroll in Courses</a></li>
+                    <li><a href="{% url 'my_courses' %}" class="option-link">View My Courses</a></li>
+                    <li><a href="{% url 'view_grades' %}" class="option-link">View My Grades</a></li>
+                </ul>
+            </div>
+        {% elif profile.role == 'teacher' %}
+            <div class="option-card teacher">
+                <h2 class="option-title">Teacher Dashboard</h2>
+                <ul class="option-links">
+                    <li><a href="{% url 'course_list' %}" class="option-link">Create a New Course</a></li>
+                    <li><a href="{% url 'teacher_enrollments' %}" class="option-link">Assign Grades</a></li>  <!-- ✅ Use this -->
+<li><a href="{% url 'teacher_enrollments' %}" class="option-link">View Enrollments</a></li>
+
+                </ul>
+            </div>
+        {% elif profile.role == 'admin' %}
+            <div class="option-card admin">
+                <h2 class="option-title">Admin Dashboard</h2>
+                <ul class="option-links">
+                    <li><a href="{% url 'user_list' %}" class="option-link">Manage Users</a></li>
+                    <li><a href="{% url 'create_course' %}" class="option-link">Create Course</a></li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Create floating particles
+    function createParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+            particle.remove();
+        }, 8000);
+    }
+    
+    // Generate particles periodically
+    setInterval(createParticle, 300);
+    
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -213,6 +213,13 @@
         transform: translateY(-2px);
     }
 
+    .form-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
     .login-btn {
         width: 100%;
         padding: 18px;
@@ -329,6 +336,7 @@
         border-radius: 50%;
         animation: particleFloat 6s linear infinite;
     }
+    
 
     @keyframes particleFloat {
         0% {
@@ -447,6 +455,9 @@
                 Login
             </button>
         </form>
+        <div class="form-footer">
+            <a href="{% url 'register' %}" class="login-link">Already have an account? Register here</a>
+        </div>
         
         {% if messages %}
             <div class="messages-container">
